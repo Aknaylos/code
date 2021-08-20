@@ -19,39 +19,9 @@ clock = pygame.time.Clock()
 font_name = pygame.font.match_font('arial')
 
 
-print('Введите свое имя')
-username = input()
-b = open('test,txt', 'r')
-h1 = b.readlines()
-h1 = [h1[i].split() for i in range(len(h1))]
-
-b.close()
-def besttable(name, points,z):
-    
-    for i in range(5):
-        if points > int((z[i][1])):
-            for j in range (4, i, -1 ):
-                z[j][1] = z[j-1][1]
-                z[j][0] = z[j-1][0]
-            z[i][1] = str(points)
-            z[i][0] = name 
-            break
-    a = open('test,txt', 'w')
-    for i in range(5):
-        k0 = str(z[i][0])
-        k1 = str(z[i][1])
-        a.write(k0 +' '+ k1+ '\n')
-    a.close()
     
     
 
-def draw_text(surf, text, size, x, y):
-    font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, WHITE)
-    text_rect = text_surface.get_rect()
-    text_rect.midtop = (x, y)
-    surf.blit(text_surface, text_rect)
-    
 
 
 def game_loop():
@@ -123,11 +93,7 @@ def game_loop():
             pygame.draw.rect(gameDisplay, red, [q, w , 20, 20])
             draw_text(gameDisplay, str(score), 18, 780, 580)
             draw_text(gameDisplay, 'record:' + ' ' + str(record), 18, 740, 20)
-            b = open('test,txt', 'r')
-            b2 = b.readlines()
-            for i in range(len(b2)):
-                draw_text(gameDisplay, b2[i][0:-1], 15, 780, 100 + 40*i)
-            b.close()
+            
             try:
                 pygame.draw.rect(gameDisplay, Yellow, [v, p , 100, 100])
                 pygame.draw.rect(gameDisplay, Yellow, [o, h , 100, 100])
@@ -295,7 +261,7 @@ def game_loop():
             p = 620
             o = 820
             h = 620
-            besttable(username, score,h1)
+          
             score = 0
             
             
@@ -308,7 +274,7 @@ def game_loop():
                 p = 620
                 o = 820
                 h = 620
-                besttable(username, score,h1)
+            
                 score = 0
         except:
             None
@@ -321,7 +287,7 @@ def game_loop():
                 o = 820
                 h = 620
                 S = [[0, 0]]
-                besttable(username, score,h1)
+              
                 score = 0
         except:
             None
@@ -337,7 +303,7 @@ def game_loop():
                 o = 820
                 h = 620
                 S = [[0, 0]]
-                besttable(username, score,h1)
+              
                 score = 0
         except:
             None       
@@ -379,11 +345,7 @@ def game_loop():
         
         ate = False
         
-        b = open('test,txt', 'r')
-        b2 = b.readlines()
-        for i in range(len(b2)):
-            draw_text(gameDisplay, b2[i][0:-1], 15, 780, 100 + 40*i)
-        b.close()
+     
         
         pygame.display.update()
         
