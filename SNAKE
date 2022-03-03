@@ -1,0 +1,394 @@
+import pygame
+
+
+
+
+import random
+from random import randrange
+
+DISPLAY_WIDTH = 820
+DISPLAY_HEIGHT = 620
+WHITE = (255, 255, 255)
+green = (0, 250, 0)
+black = (0, 0, 0)
+red = (255, 0, 0)
+blue = (0,0,255)
+Yellow = (255, 255, 0)
+apple = red
+clock = pygame.time.Clock()
+font_name = pygame.font.match_font('arial')
+
+
+print('Введите свое имя')
+username = input()
+b = open('test,txt', 'r')
+h1 = b.readlines()
+h1 = [h1[i].split() for i in range(len(h1))]
+
+b.close()
+def besttable(name, points,z):
+    
+    for i in range(5):
+        if points > int((z[i][1])):
+            for j in range (4, i, -1 ):
+                z[j][1] = z[j-1][1]      
+            z[i][1] = str(points)
+            z[i][0] = name 
+            break
+    a = open('test,txt', 'w')
+    for i in range(5):
+        k0 = str(z[i][0])
+        k1 = str(z[i][1])
+        a.write(k0 +' '+ k1+ '\n')
+    a.close()
+    
+    
+
+def draw_text(surf, text, size, x, y):
+    font = pygame.font.Font(font_name, size)
+    text_surface = font.render(text, True, WHITE)
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x, y)
+    surf.blit(text_surface, text_rect)
+    
+
+
+def game_loop():
+    pygame.init()
+    gameDisplay = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
+    pygame.display.set_caption('Simple pygame program')
+    gameDisplay.fill(black)
+
+    ate = False
+    finished = False
+    down_pressed = 5
+    a = 0
+    b = 0
+    x = a
+    y = b
+    v = 820
+    p = 620
+    o = 820
+    h = 620
+    
+    S = [[x, y]]    
+    q = randrange(0, 780, 20)
+    w = randrange(0, 580, 20) 
+    
+    score = 0
+    record = 0
+    pygame.draw.rect(gameDisplay, red, [q, w , 20, 20])
+    while not finished:  
+        if len(S)%10 == 0 and len(S) > 1:
+            v = randrange(0, 780, 20)
+            p = randrange(0, 580, 20) 
+            while abs(v - x) < 100:
+                v = randrange(0, 780, 20)
+            while abs(p - y) < 100:
+                p = randrange(0, 780, 20)
+            
+            pygame.draw.rect(gameDisplay, Yellow, [v, p , 100, 100])
+        if len(S)%20 == 0 and len(S) > 1:
+            o = randrange(0, 780, 20)
+            h = randrange(0, 580, 20) 
+            while abs(o - x) < 100:
+                o = randrange(0, 780, 20)
+            while abs(h - y) < 100:
+                h = randrange(0, 780, 20)
+            pygame.draw.rect(gameDisplay, Yellow, [o, h , 100, 100])
+            
+        if x == q and y == w:
+            q = randrange(0, 780, 20)
+            w = randrange(0, 580, 20) 
+            color = gameDisplay.get_at((q,w)) 
+            
+            while(color == Yellow):
+                q = randrange(0, 780, 20)
+                w = randrange(0, 580, 20) 
+                color = gameDisplay.get_at((q,w)) 
+
+            score = score + 1
+            if record < score:
+                record = score
+            pygame.draw.rect(gameDisplay, red, [q, w , 20, 20])
+            draw_text(gameDisplay, str(score), 18, 780, 580)
+            draw_text(gameDisplay, 'record:' + ' ' + str(record), 18, 740, 20)
+            l = len(S)
+            ate = True
+            
+            
+        if down_pressed !=5:
+            gameDisplay.fill(black)
+            pygame.draw.rect(gameDisplay, red, [q, w , 20, 20])
+            draw_text(gameDisplay, str(score), 18, 780, 580)
+            draw_text(gameDisplay, 'record:' + ' ' + str(record), 18, 740, 20)
+            b = open('test,txt', 'r')
+            b2 = b.readlines()
+            for i in range(len(b2)):
+                draw_text(gameDisplay, b2[i][0:-1], 15, 780, 100 + 40*i)
+            b.close()
+            try:
+                pygame.draw.rect(gameDisplay, Yellow, [v, p , 100, 100])
+                pygame.draw.rect(gameDisplay, Yellow, [o, h , 100, 100])
+            except:
+                None
+   
+
+        if down_pressed == 0:
+            
+            if not ate:     
+                a = x + 20
+                b = y
+                x,y = a, b
+                t = S[0][0] + 20
+                for i in range(len(S)-1,0,-1):
+                    S[i] = S[i - 1].copy()
+                S[0][0] = t
+                for i in range(len(S)):
+                    pygame.draw.rect(gameDisplay, green, [S[i][0], S[i][1] , 20, 20])
+            else:
+                
+                S.append(S[len(S) - 1])
+                for i in range(len(S)-1,0,-1):
+                    S[i] = S[i-1].copy()
+                S[0][0] = S[0][0] + 20
+                for i in range(len(S)):
+                    pygame.draw.rect(gameDisplay, green, [S[i][0], S[i][1] , 20, 20])
+                
+  
+    
+                
+        if down_pressed == 1:
+            if not ate:
+                a = x 
+                b = y - 20
+                x,y = a, b
+                t = S[0][1] - 20
+                for i in range(len(S)-1,0,-1):
+                    S[i] = S[i-1].copy()
+                S[0][1] = t
+                for i in range(len(S)):
+                    pygame.draw.rect(gameDisplay, green, [S[i][0], S[i][1] , 20, 20])
+            else:
+            
+                S.append(S[len(S) - 1])
+                for i in range(len(S)-1,0,-1):
+                    S[i] = S[i-1].copy()
+                S[0][1] = S[0][1] - 20
+                
+                for i in range(len(S)):
+                    pygame.draw.rect(gameDisplay, green, [S[i][0], S[i][1] , 20, 20])
+            
+                
+            
+        if down_pressed == 2:
+            if not ate:
+                a = x - 20
+                b = y
+                x,y = a, b
+                t = S[0][0] - 20
+                for i in range(len(S)-1,0,-1):
+                    S[i] = S[i-1].copy()
+                S[0][0] = t
+                for i in range(len(S)):
+                    pygame.draw.rect(gameDisplay, green, [S[i][0], S[i][1] , 20, 20])
+            else: 
+                S.append(S[len(S) - 1])
+                for i in range(len(S)-1,0,-1):
+                    S[i] = S[i-1].copy()
+                S[0][0] = S[0][0] - 20
+                for i in range(len(S)):
+                    pygame.draw.rect(gameDisplay, green, [S[i][0], S[i][1] , 20, 20])
+            
+                
+            
+        if down_pressed == 3:
+            if not ate:
+
+                a = x
+                b = y + 20
+                x,y = a, b
+                t = S[0][1] + 20
+                for i in range(len(S)-1,0,-1):
+                    S[i] = S[i-1].copy()
+                S[0][1] = t
+                for i in range(len(S)):
+                    pygame.draw.rect(gameDisplay, green, [S[i][0], S[i][1] , 20, 20])
+            else: 
+                S.append(S[len(S) - 1])
+                for i in range(len(S)-1,0,-1):
+                    S[i] = S[i-1].copy()
+                S[0][1] = S[0][1] + 20
+                for i in range(len(S)):
+                    pygame.draw.rect(gameDisplay, green, [S[i][0], S[i][1] , 20, 20])   
+                    
+                    
+                
+            
+        if down_pressed == 5:
+                pygame.draw.rect(gameDisplay, red, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+                pygame.draw.rect(gameDisplay, blue, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+                pygame.draw.rect(gameDisplay, Yellow, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+        
+        for i in range(len(S)): 
+
+            if S[i][0] > 800:
+                S[i][0] = 0
+            if S[i][1] > 600:
+                S[i][1] = 0
+            if S[i][0] < 0:
+                S[i][0] = 800
+            if S[i][1] < 0:
+                S[i][1] = 600
+            x = S[0][0]
+            y = S[0][1]
+            
+        K = True            
+        for event in pygame.event.get(): 
+            if K:
+                if event.type == pygame.KEYDOWN:  
+                    if event.key == pygame.K_RIGHT: 
+                        if down_pressed == 2:
+                            None
+                        else:
+                            down_pressed = 0
+                    
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        if down_pressed == 3:
+                            None
+                        else:
+                            down_pressed = 1
+                    
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        if down_pressed == 0:
+                            None
+                        else:
+                            down_pressed = 2
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
+                        if down_pressed == 1:
+                            None
+                        else:
+                            down_pressed = 3 
+                K = False
+
+           
+            
+                
+                
+            if event.type == pygame.QUIT:     
+                finished = True
+            print(event)
+            
+            pygame.display.update()
+            
+        if [x, y] in [S[i + 1] for i in range(len(S)- 1)]:
+            gameDisplay.fill(black)
+            down_pressed == 5
+            print(S)
+            S = [[0, 0]]
+            v = 820
+            p = 620
+            o = 820
+            h = 620
+            besttable(username, score,h1)
+            score = 0
+            
+            
+        try:
+            if (x - v <100 and v - x <= 0) and (y - p <100 and p - y <= 0) and(len(S)%10 != 0):   
+                gameDisplay.fill(black)
+                down_pressed == 5
+                S = [[0, 0]]
+                v = 820
+                p = 620
+                o = 820
+                h = 620
+                besttable(username, score,h1)
+                score = 0
+        except:
+            None
+        try:
+            if (x - v <1 and v - x <= 0) and (y - p <2 and p - y <= 0) and(len(S)%10 == 0):   
+                gameDisplay.fill(black)
+                down_pressed == 5
+                v = 820
+                p = 620
+                o = 820
+                h = 620
+                S = [[0, 0]]
+                besttable(username, score,h1)
+                score = 0
+        except:
+            None
+          
+        
+        
+        try:
+            if (x - o <100 and o - x <= 0) and (y - h <100 and h - y <= 0) and(len(S)%20 != 0):   
+                gameDisplay.fill(black)
+                down_pressed == 5
+                v = 820
+                p = 620
+                o = 820
+                h = 620
+                S = [[0, 0]]
+                besttable(username, score,h1)
+                score = 0
+        except:
+            None       
+
+        if len(S)>=11:
+            pygame.draw.rect(gameDisplay, red, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, blue, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, Yellow, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+        if len(S)>15:
+            pygame.draw.rect(gameDisplay, red, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, blue, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, Yellow, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+        if len(S)>20:
+            pygame.draw.rect(gameDisplay, red, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, blue, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, Yellow, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, green, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+        if len(S)>22:
+            pygame.draw.rect(gameDisplay, red, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, blue, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, Yellow, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, green, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+        if len(S)>25:
+            pygame.draw.rect(gameDisplay, red, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, blue, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, Yellow, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, green, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+        if len(S)>30:
+            pygame.draw.rect(gameDisplay, red, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, blue, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, Yellow, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, green, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+        if len(S)>33:
+            pygame.draw.rect(gameDisplay, red, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, blue, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, Yellow, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+            pygame.draw.rect(gameDisplay, green, [randrange(0, 800, 20),randrange(0, 800, 20), 20, 20])
+        
+        
+        ate = False
+        
+        b = open('test,txt', 'r')
+        b2 = b.readlines()
+        for i in range(len(b2)):
+            draw_text(gameDisplay, b2[i][0:-1], 15, 780, 100 + 40*i)
+        b.close()
+        
+        pygame.display.update()
+        
+        
+        pygame.time.delay(60)
+    pygame.quit()
+
+if __name__ == "__main__":
+    game_loop()
